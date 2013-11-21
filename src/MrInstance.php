@@ -95,7 +95,7 @@ abstract class MrInstance
     {
         if (!$id)
             $id = get_called_class();
-        if (self::$_instances[$id])
+        if (isset(self::$_instances[$id]))
             return self::$_instances[$id];
         throw new Exception(strtr('Instance "{id}" has not been created.', array(
             '{id}' => $id,
