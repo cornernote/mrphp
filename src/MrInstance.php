@@ -60,19 +60,18 @@ abstract class MrInstance
      * An array containing instantiated objects
      *
      * @var MrInstance[]
-     * @see createInstance
      * @see instance
      */
     static private $_instances;
 
     /**
-     * Returns an instantiated object with the config values assigned to object properties
-     * It is provided for preparing the object for static instance methods.
+     * Returns a static instance with the config values assigned to properties.
+     * It is provided for preparing the instance for static instance methods.
      *
      * @param array $config the values to be assigned to object properties
      * @param null|string $id the id of the instance, defaults to the called class name
      * @return MrInstance the instantiated object
-     * @see instance
+     * @see __construct
      */
     public static function createInstance($config = array(), $id = null)
     {
@@ -83,8 +82,8 @@ abstract class MrInstance
     }
 
     /**
-     * Returns a static instance of the specified class.
-     * It is provided for invoking instance methods.
+     * Returns a static instance.
+     * It is provided for invoking static instance methods.
      *
      * @param null|string $id the id of the instance, defaults to the called class name
      * @return MrInstance the instantiated object
@@ -103,7 +102,7 @@ abstract class MrInstance
     }
 
     /**
-     * Constructs the class.
+     * Constructs the instance.
      * Do not call this method.
      * This is a PHP magic method that we override to allow the following syntax to set initial properties:
      * <pre>
@@ -148,7 +147,7 @@ abstract class MrInstance
     }
 
     /**
-     * Sets value of an instance property.
+     * Sets value of a property.
      * Do not call this method.
      * This is a PHP magic method that we override to allow using the following syntax to set a property:
      * <pre>
