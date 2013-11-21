@@ -6,7 +6,7 @@ require_once(dirname(__FILE__) . '/MrInstance.php');
  *
  * @method static MrConfig instance()
  */
-class jsonConfig extends MrInstance
+class MrJsonConfig extends MrInstance
 {
 
     /**
@@ -22,19 +22,20 @@ class jsonConfig extends MrInstance
     /**
      * @var array
      */
-    private $jsonDecoded = null;
+    private $_configs = null;
 
     /**
      * PHP getter magic method.
      * This method is overridden so that config keys can be accessed like properties.
+     * 
      * @param string $name config key
      * @return mixed config value
      * @see getAttribute
      */
     public function __get($name)
     {
-        if (isset($this->jsonDecoded[$name]))
-            return $this->jsonDecoded[$name];
+        if (isset($this->_configs[$name]))
+            return $this->_configs[$name];
         else
             return parent::__get($name);
     }
@@ -42,6 +43,7 @@ class jsonConfig extends MrInstance
     /**
      * PHP setter magic method.
      * This method is overridden so that config keys can be accessed like properties.
+     * 
      * @param string $name property name
      * @param mixed $value property value
      * @return mixed
@@ -67,7 +69,7 @@ class jsonConfig extends MrInstance
      */
     public function getConfig($name)
     {
-        return $this->jsonDecoded[$name];
+        return $this->_configs[$name];
     }
 
     /**
@@ -75,7 +77,7 @@ class jsonConfig extends MrInstance
      */
     public function getConfigs()
     {
-        return $this->jsonDecoded;
+        return $this->_configs;
     }
 
     /**
@@ -96,21 +98,21 @@ class jsonConfig extends MrInstance
     {
         foreach ($configs as $name => $value) {
             if ($value !== null) {
-                $this->jsonDecoded[$name] = $value;
+                $this->_configs[$name] = $value;
             }
             else {
-                unset($this->jsonDecoded[$name]);
+                unset($this->_configs[$name]);
             }
             $this->saveConfig($name, $value);
         }
     }
 
     /**
+     * 
      */
     private function saveConfig()
     {
-        $encoded = json_encode($this->jsonDecoded);
-        file_put_contents($this->jsonPath, $encoded);
+        file_put_contents($this->jsonPath, json_encode($this->_configs));
     }
 
     /**
@@ -119,7 +121,7 @@ class jsonConfig extends MrInstance
     public function loadJsonData()
     {
         // return existing object
-        if ($this->jsonDecoded)
+        if ($this->_configs)
             return;
 
         // get the database name
@@ -128,11 +130,9 @@ class jsonConfig extends MrInstance
 
         // create the folder
         if (!file_exists(dirname($this->jsonPath)))
-            if (!mkdir(dirname($this->jsonPath), $this->mode['folder'], true)) {
+            if (!mkdir(dirname($this->jsonPath), $this->mode['folder'], true))
                 throw new Exception('Could not create directory ' . $this->jsonPath);
-            }
 
-        $contents = file_get_contents($this->jsonPath);
-        $this->jsonDecoded = json_decode($contents, true);
+        $this->_configs = json_decode(file_get_contents($this->jsonPath), true);
     }
 }
