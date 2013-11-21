@@ -1,5 +1,4 @@
 <?php
-
 /**
  * MrInstance implements protocols for static instance methods and defining using properties.
  *
@@ -45,9 +44,12 @@
  * This class was compiled by Brett O'Donnell, the concepts came from Yii Framework written by Qiang Xue.
  *
  * @author Brett O'Donnell <cornernote@gmail.com>
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @copyright Copyright (c) 2013, Brett O'Donnell
  *
- * @copyright 2013, All Rights Reserved
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @copyright Copyright (c) 2013, Yii Software LLC
+ *
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 abstract class MrInstance
 {
@@ -107,6 +109,7 @@ abstract class MrInstance
      * <pre>
      * $value=$instance->propertyName;
      * </pre>
+     *
      * @param string $name the property name
      * @return mixed the property value
      * @throws Exception if the property or event is not defined
@@ -130,6 +133,7 @@ abstract class MrInstance
      * <pre>
      * $this->propertyName=$value;
      * </pre>
+     *
      * @param string $name the property name
      * @param mixed $value the property value
      * @return mixed
