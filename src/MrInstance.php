@@ -102,6 +102,16 @@ abstract class MrInstance
     }
 
     /**
+     * Initializes the instance.
+     * This method is called at in the constructor after instance has been configured.
+     *
+     * @see __construct
+     */
+    public function init()
+    {
+    }
+
+    /**
      * Constructs the instance.
      * Do not call this method.
      * This is a PHP magic method that we override to allow the following syntax to set initial properties:
@@ -119,6 +129,7 @@ abstract class MrInstance
         $instance = $this; // prevent setting non-public properties
         foreach ($config as $k => $v)
             $instance->$k = $v;
+        $this->init();
         self::$_instances[$id] = $this;
     }
 
