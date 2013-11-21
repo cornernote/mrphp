@@ -103,7 +103,7 @@ abstract class MrInstance
 
     /**
      * Initializes the instance.
-     * This method is called at in the constructor after instance has been configured.
+     * This method is called by the constructor after instance has been configured.
      *
      * @see __construct
      */
