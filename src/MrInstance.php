@@ -41,11 +41,12 @@
  *
  * Credits
  *
- * This class was compiled by Brett O'Donnell, the concepts came from Yii Framework written by Qiang Xue.
+ * This class was written and compiled by Brett O'Donnell and Zain ul abidin.
+ * Some code was derived from Yii Framework written by Qiang Xue.
  *
  * @author Brett O'Donnell <cornernote@gmail.com>
  * @author Zain ul abidin <zainengineer@gmail.com>
- * @copyright Copyright (c) 2013, Brett O'Donnell, Zain ul abidin
+ * @copyright Copyright (c) 2013, Brett O'Donnell and Zain ul abidin
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @copyright Copyright (c) 2013, Yii Software LLC
