@@ -8,15 +8,15 @@
  *
  * Instantiation is performed by calling the static createInstance() method, and passing a config array:
  * <pre>
- * FooBar::createInstance(array('propertyName' => 'propertyValue', ...));
+ * $fooBar=FooBar::createInstance(array('foo'=>'bar', ... )); // equivalent to $fooBar=new FooBar(array('foo'=>'bar', ... ))
  * </pre>
  * The static instance of the object can be called globally:
  * <pre>
- * echo FooBar::instance()->propertyName;
+ * $a=FooBar::instance()->foo; // equivalent to $a=$fooBar->foo
  * </pre>
  * The signature of the FooBar class is as follows:
  * <pre>
- * class FooBar extends MrInstance { public $propertyName; ... }
+ * class FooBar extends MrInstance { public $foo; ... }
  * </pre>
  *
  *
@@ -74,12 +74,10 @@ abstract class MrInstance
      */
     public static function createInstance($config = array(), $id = null)
     {
+        $class = get_called_class();
         if (!$id)
-            $id = get_called_class();
-        self::$_instances[$id] = new $id($config);
-        foreach ($config as $k => $v)
-            self::$_instances[$id]->$k = $v;
-        return self::$_instances[$id];
+            $id = $class;
+        return new $class($config, $id);
     }
 
     /**
@@ -103,11 +101,32 @@ abstract class MrInstance
     }
 
     /**
+     * Constructs the class.
+     * Do not call this method.
+     * This is a PHP magic method that we override to allow the following syntax to set initial properties:
+     * <pre>
+     * $instance = new MrInstance(array('foo'=>'bar', ... ));
+     * </pre>
+     *
+     * @param array $config
+     * @param null $id
+     */
+    public function __construct($config = array(), $id = null)
+    {
+        if (!$id)
+            $id = get_class($this);
+        $instance = $this; // prevent setting non-public properties
+        foreach ($config as $k => $v)
+            $instance->$k = $v;
+        self::$_instances[$id] = $this;
+    }
+
+    /**
      * Returns a property value.
      * Do not call this method.
      * This is a PHP magic method that we override to allow using the following syntax to read a property:
      * <pre>
-     * $value=$instance->propertyName;
+     * $value=$this->propertyName;
      * </pre>
      *
      * @param string $name the property name
