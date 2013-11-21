@@ -1,0 +1,11 @@
+.idea
+.svn
+*.local.php
+*_local.bat
+error_log
+runtime/
+htroot/assets/
+TestController.php
+TestCommand.php
+data/
+logs/
