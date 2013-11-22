@@ -60,7 +60,20 @@ class MrJsonConfig extends MrInstance
      */
     public function init()
     {
-        $this->loadJsonData();
+        // return existing object
+        if ($this->_configs)
+            return;
+
+        // get the database name
+        if (!$this->jsonPath)
+            $this->jsonPath = dirname(dirname(__FILE__)) . '/json/' . get_class($this) . '.json';
+
+        // create the folder
+        if (!file_exists(dirname($this->jsonPath)))
+            if (!mkdir(dirname($this->jsonPath), $this->mode['folder'], true))
+                throw new Exception('Could not create directory ' . $this->jsonPath);
+
+        $this->_configs = json_decode(file_get_contents($this->jsonPath), true);
     }
 
     /**
@@ -86,9 +99,7 @@ class MrJsonConfig extends MrInstance
      */
     public function setConfig($name, $value)
     {
-        $this->setConfigs(array(
-            $name => $value,
-        ));
+        $this->setConfigs(array($name => $value));
     }
 
     /**
@@ -97,42 +108,12 @@ class MrJsonConfig extends MrInstance
     public function setConfigs($configs)
     {
         foreach ($configs as $name => $value) {
-            if ($value !== null) {
+            if ($value !== null)
                 $this->_configs[$name] = $value;
-            }
-            else {
+            else
                 unset($this->_configs[$name]);
-            }
-            $this->saveConfig($name, $value);
         }
-    }
-
-    /**
-     * 
-     */
-    private function saveConfig()
-    {
         file_put_contents($this->jsonPath, json_encode($this->_configs));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function loadJsonData()
-    {
-        // return existing object
-        if ($this->_configs)
-            return;
-
-        // get the database name
-        if (!$this->jsonPath)
-            $this->jsonPath = dirname(dirname(__FILE__)) . '/json/' . get_class($this) . '.json';
-
-        // create the folder
-        if (!file_exists(dirname($this->jsonPath)))
-            if (!mkdir(dirname($this->jsonPath), $this->mode['folder'], true))
-                throw new Exception('Could not create directory ' . $this->jsonPath);
-
-        $this->_configs = json_decode(file_get_contents($this->jsonPath), true);
-    }
 }
