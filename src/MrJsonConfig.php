@@ -2,9 +2,9 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * Class MrConfig
+ * Class MrJsonConfig
  *
- * @method static MrConfig instance()
+ * @method static MrJsonConfig instance()
  */
 class MrJsonConfig extends MrInstance
 {
