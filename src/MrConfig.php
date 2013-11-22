@@ -16,7 +16,7 @@ require_once(dirname(__FILE__) . '/MrInstance.php');
  * </pre>
  *
  *
- * MrInstance magic methods are available through the static instance() method.
+ * MrConfig instance is available through the static instance() method.
  * @method static MrConfig instance()
  *
  *
@@ -42,6 +42,83 @@ class MrConfig extends MrInstance
      * @var array config keys and values
      */
     private $_configs = array();
+
+    /**
+     * Return the value of a config key
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function getConfig($name)
+    {
+        return $this->_configs[$name];
+    }
+
+    /**
+     * Return an array of all config keys and values
+     *
+     * @return array
+     */
+    public function getConfigs()
+    {
+        return $this->_configs;
+    }
+
+    /**
+     * Set the value of a config key
+     *
+     * @param $name
+     * @param $value
+     */
+    public function setConfig($name, $value)
+    {
+        $this->setConfigs(array($name => $value));
+    }
+
+    /**
+     * Set the value of all config keys and values and writes to the config file
+     *
+     * @param $configs
+     */
+    public function setConfigs($configs)
+    {
+        foreach ($configs as $name => $value)
+            if ($value !== null)
+                $this->_configs[$name] = $value;
+            elseif (isset($this->_configs[$name]))
+                unset($this->_configs[$name]);
+        file_put_contents($this->file, json_encode($this->_configs));
+    }
+
+    /**
+     * Initializes the instance, loading data from the config file into the config array.
+     */
+    public function init()
+    {
+        // return existing object
+        if ($this->_configs)
+            return;
+
+        // get the database name
+        if (!$this->file)
+            $this->file = dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.json';
+
+        // create the folder
+        if (!file_exists(dirname($this->file)))
+            if (!mkdir(dirname($this->file), 0777, true))
+                throw new Exception(strtr('Could not create directory for {class}.', array(
+                    '{class}' => get_class($this),
+                )));
+
+        // create the file
+        if (!file_exists($this->file))
+            if (!file_put_contents($this->file, json_encode($this->_configs)))
+                throw new Exception(strtr('Could not create file for {class}.', array(
+                    '{class}' => get_class($this),
+                )));
+
+        $this->_configs = json_decode(file_get_contents($this->file), true);
+    }
 
     /**
      * PHP getter magic method.
@@ -103,83 +180,6 @@ class MrConfig extends MrInstance
             $this->setConfig($name, null);
         else
             parent::__unset($name);
-    }
-
-    /**
-     * Initializes the instance, loading data from the config file into the config array.
-     */
-    public function init()
-    {
-        // return existing object
-        if ($this->_configs)
-            return;
-
-        // get the database name
-        if (!$this->file)
-            $this->file = dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.json';
-
-        // create the folder
-        if (!file_exists(dirname($this->file)))
-            if (!mkdir(dirname($this->file), 0777, true))
-                throw new Exception(strtr('Could not create directory for {class}.', array(
-                    '{class}' => get_class($this),
-                )));
-
-        // create the file
-        if (!file_exists($this->file))
-            if (!file_put_contents($this->file, json_encode($this->_configs)))
-                throw new Exception(strtr('Could not create file for {class}.', array(
-                    '{class}' => get_class($this),
-                )));
-
-        $this->_configs = json_decode(file_get_contents($this->file), true);
-    }
-
-    /**
-     * Return the value of a config key
-     *
-     * @param $name
-     * @return mixed
-     */
-    public function getConfig($name)
-    {
-        return $this->_configs[$name];
-    }
-
-    /**
-     * Return an array of all config keys and values
-     *
-     * @return array
-     */
-    public function getConfigs()
-    {
-        return $this->_configs;
-    }
-
-    /**
-     * Set the value of a config key
-     *
-     * @param $name
-     * @param $value
-     */
-    public function setConfig($name, $value)
-    {
-        $this->setConfigs(array($name => $value));
-    }
-
-    /**
-     * Set the value of all config keys and values and writes to the config file
-     *
-     * @param $configs
-     */
-    public function setConfigs($configs)
-    {
-        foreach ($configs as $name => $value)
-            if ($value !== null)
-                $this->_configs[$name] = $value;
-            elseif (isset($this->_configs[$name]))
-                unset($this->_configs[$name]);
-        file_put_contents($this->file, json_encode($this->_configs));
     }
 
 }
