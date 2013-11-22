@@ -178,7 +178,7 @@ class MrSqliteConfig extends MrInstance
 
         // get the database name
         if (!$this->database)
-            $this->database = dirname(dirname(__FILE__)) . '/db/' . get_class($this) . '.db';
+            $this->database = dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.db';
 
         // create the folder
         if (!file_exists(dirname($this->database)))

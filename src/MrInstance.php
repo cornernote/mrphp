@@ -188,4 +188,41 @@ abstract class MrInstance
             )));
     }
 
+    /**
+     * Checks if a property value is null.
+     * Do not call this method.
+     * This is a PHP magic method that we override to allow using isset() to detect if a property is set or not.
+     *
+     * @param string $name the property name or the event name
+     * @return boolean
+     */
+    public function __isset($name)
+    {
+        $getter = 'get' . $name;
+        if (method_exists($this, $getter))
+            return $this->$getter() !== null;
+        return false;
+    }
+
+    /**
+     * Sets a property to be null.
+     * Do not call this method.
+     * This is a PHP magic method that we override to allow using unset() to set a property to be null.
+     *
+     * @param string $name the property name or the event name
+     * @throws Exception if the property is read only.
+     * @return mixed
+     */
+    public function __unset($name)
+    {
+        $setter = 'set' . $name;
+        if (method_exists($this, $setter))
+            $this->$setter(null);
+        elseif (method_exists($this, 'get' . $name))
+            throw new Exception(strtr('Property "{class}.{property}" is read only.', array(
+                '{class}' => get_class($this),
+                '{property}' => $name,
+            )));
+    }
+
 }

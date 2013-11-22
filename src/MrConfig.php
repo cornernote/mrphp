@@ -2,32 +2,51 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * Class MrConfig
+ * MrConfig implements protocols for accessing configuration keys using properties.
  *
+ *
+ * Accessing Configuration Keys Using Properties
+ *
+ * Config keys can be accessed in the way like accessing normal object members.
+ * Reading or writing a config key will cause the invocation of the corresponding getter or setter method:
+ * <pre>
+ * $config = MrConfig::createInstance(array('file'=>'/path/to/config.json'));
+ * $a=$config->text;     // equivalent to $a=$config->getConfig('text');
+ * $config->text='abc';  // equivalent to $config->setConfig('text','abc');
+ * </pre>
+ *
+ *
+ * MrInstance magic methods are available through the static instance() method.
  * @method static MrConfig instance()
+ *
+ *
+ * Credits
+ *
+ * This class was written and compiled by Brett O'Donnell and Zain ul abidin.
+ *
+ * @author Brett O'Donnell <cornernote@gmail.com>
+ * @author Zain ul abidin <zainengineer@gmail.com>
+ * @copyright Copyright (c) 2013, Brett O'Donnell and Zain ul abidin
+ *
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 class MrConfig extends MrInstance
 {
 
     /**
-     * @var string filename of the json
+     * @var string full path to the json config file
      */
     public $file;
 
     /**
-     * @var array mode to use when creating files and folders
+     * @var array config keys and values
      */
-    public $mode = array('folder' => 0777, 'file' => 0666); // file folder
-
-    /**
-     * @var array
-     */
-    private $_configs = null;
+    private $_configs = array();
 
     /**
      * PHP getter magic method.
      * This method is overridden so that config keys can be accessed like properties.
-     * 
+     *
      * @param string $name config key
      * @return mixed config value
      * @see getAttribute
@@ -43,7 +62,7 @@ class MrConfig extends MrInstance
     /**
      * PHP setter magic method.
      * This method is overridden so that config keys can be accessed like properties.
-     * 
+     *
      * @param string $name property name
      * @param mixed $value property value
      * @return mixed
@@ -56,7 +75,38 @@ class MrConfig extends MrInstance
     }
 
     /**
+     * PHP isset magic method.
+     * This method is overridden to allow using isset() to detect if a config key is set or not.
      *
+     * @param string $name the property name or the event name
+     * @return boolean
+     */
+    public function __isset($name)
+    {
+        if (isset($this->_configs[$name]))
+            return true;
+        return parent::__get($name);
+    }
+
+    /**
+     * PHP unset magic method.
+     * Sets a component property to be null.
+     * Do not call this method.
+     * This is a PHP magic method that we override to allow using unset() to set a config key to be null.
+     *
+     * @param string $name the property name or the event name
+     * @return mixed
+     */
+    public function __unset($name)
+    {
+        if (isset($this->_configs[$name]))
+            $this->setConfig($name, null);
+        else
+            parent::__unset($name);
+    }
+
+    /**
+     * Initializes the instance, loading data from the config file into the config array.
      */
     public function init()
     {
@@ -66,17 +116,28 @@ class MrConfig extends MrInstance
 
         // get the database name
         if (!$this->file)
-            $this->file = dirname(dirname(__FILE__)) . '/json/' . get_class($this) . '.json';
+            $this->file = dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.json';
 
         // create the folder
         if (!file_exists(dirname($this->file)))
-            if (!mkdir(dirname($this->file), $this->mode['folder'], true))
-                throw new Exception('Could not create directory ' . $this->file);
+            if (!mkdir(dirname($this->file), 0777, true))
+                throw new Exception(strtr('Could not create directory for {class}.', array(
+                    '{class}' => get_class($this),
+                )));
+
+        // create the file
+        if (!file_exists($this->file))
+            if (!file_put_contents($this->file, json_encode($this->_configs)))
+                throw new Exception(strtr('Could not create file for {class}.', array(
+                    '{class}' => get_class($this),
+                )));
 
         $this->_configs = json_decode(file_get_contents($this->file), true);
     }
 
     /**
+     * Return the value of a config key
+     *
      * @param $name
      * @return mixed
      */
@@ -86,6 +147,8 @@ class MrConfig extends MrInstance
     }
 
     /**
+     * Return an array of all config keys and values
+     *
      * @return array
      */
     public function getConfigs()
@@ -94,6 +157,8 @@ class MrConfig extends MrInstance
     }
 
     /**
+     * Set the value of a config key
+     *
      * @param $name
      * @param $value
      */
@@ -103,17 +168,17 @@ class MrConfig extends MrInstance
     }
 
     /**
+     * Set the value of all config keys and values and writes to the config file
+     *
      * @param $configs
      */
     public function setConfigs($configs)
     {
-        foreach ($configs as $name => $value) {
-            if ($value === null)
-                if (isset($this->_configs[$name])) 
-                    unset($this->_configs[$name]);
-            else
+        foreach ($configs as $name => $value)
+            if ($value !== null)
                 $this->_configs[$name] = $value;
-        }
+            elseif (isset($this->_configs[$name]))
+                unset($this->_configs[$name]);
         file_put_contents($this->file, json_encode($this->_configs));
     }
 
