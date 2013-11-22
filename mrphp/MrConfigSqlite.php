@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * MrSqliteConfig implements protocols for accessing configuration keys using properties.
+ * MrConfigSqlite implements protocols for accessing configuration keys using properties.
  *
  *
  * Accessing Configuration Keys Using Properties
@@ -16,8 +16,8 @@ require_once(dirname(__FILE__) . '/MrInstance.php');
  * </pre>
  *
  *
- * MrSqliteConfig instance is available through the static instance() method.
- * @method static MrSqliteConfig instance()
+ * MrConfigSqlite instance is available through the static instance() method.
+ * @method static MrConfigSqlite instance()
  *
  *
  * Credits
@@ -30,7 +30,7 @@ require_once(dirname(__FILE__) . '/MrInstance.php');
  *
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
-class MrSqliteConfig extends MrInstance
+class MrConfigSqlite extends MrInstance
 {
 
     /**
