@@ -1,0 +1,7 @@
+{
+    "name": "mrphp/mrphp",
+    "description": "Mr PHP Class Library",
+    "type": "library",
+    "keywords": ["mrphp"],
+    "minimum-stability": "dev"
+}

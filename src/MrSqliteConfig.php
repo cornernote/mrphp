@@ -2,10 +2,33 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * Class MrSqliteConfig
+ * MrSqliteConfig implements protocols for accessing configuration keys using properties.
  *
+ *
+ * Accessing Configuration Keys Using Properties
+ *
+ * Config keys can be accessed in the way like accessing normal object members.
+ * Reading or writing a config key will cause the invocation of the corresponding getter or setter method:
+ * <pre>
+ * $config = MrConfig::createInstance(array('file'=>'/path/to/config.json'));
+ * $a=$config->text;     // equivalent to $a=$config->getConfig('text');
+ * $config->text='abc';  // equivalent to $config->setConfig('text','abc');
+ * </pre>
+ *
+ *
+ * MrSqliteConfig instance is available through the static instance() method.
  * @method static MrSqliteConfig instance()
- * @property SQLiteDatabase $sqlite
+ *
+ *
+ * Credits
+ *
+ * This class was written and compiled by Brett O'Donnell and Zain ul abidin.
+ *
+ * @author Brett O'Donnell <cornernote@gmail.com>
+ * @author Zain ul abidin <zainengineer@gmail.com>
+ * @copyright Copyright (c) 2013, Brett O'Donnell and Zain ul abidin
+ *
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 class MrSqliteConfig extends MrInstance
 {
