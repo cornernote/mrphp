@@ -2,12 +2,12 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * Class MrConfig
+ * Class MrSqliteConfig
  *
- * @method static MrConfig instance()
+ * @method static MrSqliteConfig instance()
  * @property SQLiteDatabase $sqlite
  */
-class MrConfig extends MrInstance
+class MrSqliteConfig extends MrInstance
 {
 
     /**
