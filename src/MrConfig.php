@@ -2,17 +2,17 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * Class MrJsonConfig
+ * Class MrConfig
  *
- * @method static MrJsonConfig instance()
+ * @method static MrConfig instance()
  */
-class MrJsonConfig extends MrInstance
+class MrConfig extends MrInstance
 {
 
     /**
      * @var string filename of the json
      */
-    public $jsonPath;
+    public $file;
 
     /**
      * @var array mode to use when creating files and folders
@@ -65,15 +65,15 @@ class MrJsonConfig extends MrInstance
             return;
 
         // get the database name
-        if (!$this->jsonPath)
-            $this->jsonPath = dirname(dirname(__FILE__)) . '/json/' . get_class($this) . '.json';
+        if (!$this->file)
+            $this->file = dirname(dirname(__FILE__)) . '/json/' . get_class($this) . '.json';
 
         // create the folder
-        if (!file_exists(dirname($this->jsonPath)))
-            if (!mkdir(dirname($this->jsonPath), $this->mode['folder'], true))
-                throw new Exception('Could not create directory ' . $this->jsonPath);
+        if (!file_exists(dirname($this->file)))
+            if (!mkdir(dirname($this->file), $this->mode['folder'], true))
+                throw new Exception('Could not create directory ' . $this->file);
 
-        $this->_configs = json_decode(file_get_contents($this->jsonPath), true);
+        $this->_configs = json_decode(file_get_contents($this->file), true);
     }
 
     /**
@@ -113,7 +113,7 @@ class MrJsonConfig extends MrInstance
             else
                 unset($this->_configs[$name]);
         }
-        file_put_contents($this->jsonPath, json_encode($this->_configs));
+        file_put_contents($this->file, json_encode($this->_configs));
     }
 
 }
