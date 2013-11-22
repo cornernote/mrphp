@@ -108,10 +108,11 @@ class MrConfig extends MrInstance
     public function setConfigs($configs)
     {
         foreach ($configs as $name => $value) {
-            if ($value !== null)
-                $this->_configs[$name] = $value;
+            if ($value === null)
+                if (isset($this->_configs[$name])) 
+                    unset($this->_configs[$name]);
             else
-                unset($this->_configs[$name]);
+                $this->_configs[$name] = $value;
         }
         file_put_contents($this->file, json_encode($this->_configs));
     }
