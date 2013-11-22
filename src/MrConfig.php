@@ -2,12 +2,12 @@
 require_once(dirname(__FILE__) . '/MrInstance.php');
 
 /**
- * MrConfig implements protocols for accessing configuration keys using properties.
+ * MrConfig implements protocols for accessing configuration data using properties.
  *
  *
  * Accessing Configuration Keys Using Properties
  *
- * Config keys can be accessed in the way like accessing normal object members.
+ * Config data can be accessed in the way like accessing normal object members.
  * Reading or writing a config key will cause the invocation of the corresponding getter or setter method:
  * <pre>
  * $config = MrConfig::createInstance(array('file'=>'/path/to/config.json'));
