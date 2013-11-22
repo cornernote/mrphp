@@ -167,8 +167,6 @@ class MrConfig extends MrInstance
 
     /**
      * PHP unset magic method.
-     * Sets a component property to be null.
-     * Do not call this method.
      * This is a PHP magic method that we override to allow using unset() to set a config key to be null.
      *
      * @param string $name the property name or the event name
