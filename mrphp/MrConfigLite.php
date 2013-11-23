@@ -32,6 +32,11 @@ class MrConfigLite
     public $file;
 
     /**
+     * @var string php or json
+     */
+    public $storage = 'php';
+
+    /**
      * @var array config keys and values
      */
     private $_configs = array();
@@ -80,7 +85,11 @@ class MrConfigLite
                 $this->_configs[$name] = $value;
             elseif (isset($this->_configs[$name]))
                 unset($this->_configs[$name]);
-        file_put_contents($this->file, json_encode($this->_configs));
+
+        if ($this->storage == 'json')
+            file_put_contents($this->file, json_encode($this->_configs));
+        else
+            file_put_contents($this->file, '<?php return ' . var_export($this->_configs, true) . ';');
     }
 
     /**
@@ -89,10 +98,10 @@ class MrConfigLite
      * @param null|string $file
      * @throws Exception
      */
-    public function __construct($file=null)
+    public function __construct($file = null)
     {
         // get the database name
-        $this->file = $file ? $file : dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.json';
+        $this->file = $file ? $file : dirname(dirname(__FILE__)) . '/data/' . get_class($this) . '.' . $this->storage;
 
         // create the folder
         if (!file_exists(dirname($this->file)))
@@ -102,13 +111,21 @@ class MrConfigLite
                 )));
 
         // create the file
-        if (!file_exists($this->file))
-            if (!file_put_contents($this->file, json_encode($this->_configs)))
+        if (!file_exists($this->file)) {
+            if ($this->storage == 'json')
+                $contents = json_encode(array());
+            else
+                $contents = '<?php return ' . var_export(array(), true) . ';';
+            if (!file_put_contents($this->file, $contents))
                 throw new Exception(strtr('Could not create file for {class}.', array(
                     '{class}' => get_class($this),
                 )));
+        }
 
-        $this->_configs = json_decode(file_get_contents($this->file), true);
+        if ($this->storage == 'json')
+            $this->_configs = json_decode(file_get_contents($this->file), true);
+        else
+            $this->_configs = require($this->file);
     }
 
 }
