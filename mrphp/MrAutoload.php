@@ -20,7 +20,7 @@ require_once(dirname(__FILE__) . '/MrInstance.php');
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @copyright Copyright (c) 2013, Yii Software LLC
  *
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license BSD-3-Clause https://raw.github.com/cornernote/mrphp/master/LICENSE
  */
 class MrAutoload
 {
