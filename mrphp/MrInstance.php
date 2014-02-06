@@ -78,7 +78,11 @@ abstract class MrInstance
         $class = get_called_class();
         if (!$id)
             $id = $class;
-        return new $class($config, $id);
+        $instance = new $class($config, $id);
+        foreach ($config as $k => $v)
+            $instance->$k = $v;
+        $instance->init();
+        return self::$_instances[$id] = $instance;
     }
 
     /**
@@ -115,22 +119,13 @@ abstract class MrInstance
      * Constructs the instance.
      * Do not call this method.
      * This is a PHP magic method that we override to allow the following syntax to set initial properties:
-     * <pre>
-     * $instance = new MrInstance(array('foo'=>'bar', ... ));
-     * </pre>
      *
      * @param array $config
      * @param null $id
      */
-    public function __construct($config = array(), $id = null)
+    public function __construct()
     {
-        if (!$id)
-            $id = get_class($this);
-        $instance = $this; // prevent setting non-public properties
-        foreach ($config as $k => $v)
-            $instance->$k = $v;
         $this->init();
-        self::$_instances[$id] = $this;
     }
 
     /**
