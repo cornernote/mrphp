@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MrInstance implements protocols for static instance methods and defining using properties.
  *
@@ -62,7 +63,7 @@ abstract class MrInstance
      * @var MrInstance[]
      * @see instance
      */
-    static private $_instances;
+    static public $instances;
 
     /**
      * Returns a static instance with the config values assigned to properties.
@@ -81,8 +82,7 @@ abstract class MrInstance
         $instance = new $class($config, $id);
         foreach ($config as $k => $v)
             $instance->$k = $v;
-        $instance->init();
-        return self::$_instances[$id] = $instance;
+        return self::$instances[$id] = $instance;
     }
 
     /**
@@ -98,34 +98,11 @@ abstract class MrInstance
     {
         if (!$id)
             $id = get_called_class();
-        if (isset(self::$_instances[$id]))
-            return self::$_instances[$id];
+        if (isset(self::$instances[$id]))
+            return self::$instances[$id];
         throw new Exception(strtr('Instance "{id}" has not been created.', array(
             '{id}' => $id,
         )));
-    }
-
-    /**
-     * Initializes the instance.
-     * This method is called by the constructor after instance has been configured.
-     *
-     * @see __construct
-     */
-    public function init()
-    {
-    }
-
-    /**
-     * Constructs the instance.
-     * Do not call this method.
-     * This is a PHP magic method that we override to allow the following syntax to set initial properties:
-     *
-     * @param array $config
-     * @param null $id
-     */
-    public function __construct()
-    {
-        $this->init();
     }
 
     /**
