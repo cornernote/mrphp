@@ -3,5 +3,10 @@
     "description": "Mr PHP Class Library",
     "type": "library",
     "keywords": ["mrphp"],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "classmap": [
+            "mrphp/"
+        ]
+    }
 }
